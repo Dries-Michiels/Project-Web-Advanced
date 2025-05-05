@@ -2,6 +2,25 @@ import './style.css'
 import javascriptLogo from './javascript.svg'
 import viteLogo from '/vite.svg'
 import { setupCounter } from './counter.js'
+import Router from './router.js'
+
+const routes = {
+  '/': (rootElement) => {
+    rootElement.innerHTML = '<h1>Home</h1>';
+  },
+  '/about': (rootElement) => {
+    rootElement.innerHTML = '<h1>About</h1>';
+  },
+  '/contact': (rootElement) => {
+    rootElement.innerHTML = '<h1>Contact</h1>';
+  },
+  '/404': (rootElement) => {
+    rootElement.innerHTML = '<h1>404 Not Found</h1>';
+  }
+};
+
+new Router(routes);
+
 
 document.querySelector('#app').innerHTML = `
   <div>
