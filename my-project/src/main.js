@@ -36,7 +36,7 @@ const routes = {
 };
 
 function loadUrinalsData() {
-  fetch('https://bruxellesdata.opendatasoft.com/api/explore/v2.1/catalog/datasets/urinoirs-publics-vbx/records?limit=20')
+  fetch('https://opendata.brussels.be/api/explore/v2.1/catalog/datasets/toilettes_publiques_vbx/records?limit=20')
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
@@ -68,7 +68,7 @@ function loadUrinalsData() {
         const displayColumns = [
           { key: 'objectid', label: 'ID' },
           { key: 'address_fr', label: 'Location' },
-          { key: 'type_fr', label: 'Type' },
+          { key: 'pricing_fr', label: 'Pricing' },
           { key: 'pmr_fr', label: 'Wheelchair Accessible' },
           { key: 'openinghours', label: 'Opening Hours' },
           { key: 'municipality_fr', label: 'City/District' },
@@ -93,7 +93,7 @@ function loadUrinalsData() {
           // Create favorites section first
           const favoritesSection = document.createElement('div');
           favoritesSection.className = 'favorites-section';
-          favoritesSection.innerHTML = '<h2>My Favorites</h2>';
+          favoritesSection.innerHTML = '<h2>Favorieten</h2>';
           
           // Get current favorites
           const currentFavorites = loadFavorites();
@@ -106,7 +106,7 @@ function loadUrinalsData() {
             const favTable = createTable(favoriteItems, displayColumns, currentFavorites);
             favoritesSection.appendChild(favTable);
           } else {
-            favoritesSection.innerHTML += '<p class="no-favorites">No favorites yet. Click the heart icon to add favorites.</p>';
+            favoritesSection.innerHTML += '<p class="no-favorites">Nog geen favorieten. Klik op het hartje om favorieten toe te voegen.</p>';
           }
           
           recordsDiv.appendChild(favoritesSection);
@@ -244,6 +244,9 @@ function loadUrinalsData() {
         function saveFavorites(favorites) {
           localStorage.setItem('urinal-favorites', JSON.stringify(favorites));
         }
+
+        
+        
         
         // Initial render with all data
         renderData(allResults);
