@@ -19,9 +19,43 @@ const routes = {
     rootElement.innerHTML = '<h1>404 Not Found</h1>';
   },
 '/urinals': (rootElement) => {
-  // Create the basic structure for the urinals page
+  // Create the basic structure for the urinals page with filter options
   rootElement.innerHTML = `
     <h1>Public Urinals in Brussels</h1>
+    
+    <div id="filters-container">
+      <h3>Filter Options</h3>
+      <div class="filter-controls">
+        <div class="filter-group">
+          <label for="price-filter">Price:</label>
+          <select id="price-filter">
+            <option value="">All</option>
+            <option value="Gratuit">Free</option>
+            <option value="Payant">Paid</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="hours-filter">Opening Hours:</label>
+          <select id="hours-filter">
+            <option value="">All</option>
+            <option value="24/24">24/7 Open</option>
+            <option value="limited">Limited Hours</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="wheelchair-filter">Wheelchair Access:</label>
+          <select id="wheelchair-filter">
+            <option value="">All</option>
+            <option value="PBM">Accessible</option>
+            <option value="Niet PBM">Not Accessible</option>
+          </select>
+        </div>
+        
+        <button id="reset-filters">Reset Filters</button>
+      </div>
+    </div>
     
     <div id="urinals-container">
       <div id="map"></div>
@@ -31,7 +65,6 @@ const routes = {
   
   // Load and display the urinals data
   loadUrinalsData();
-
 },
 };
 
@@ -56,20 +89,83 @@ function loadUrinalsData() {
         // Load favorites from localStorage
         const favorites = loadFavorites();
         
-        // Initialize the map
-        const map = L.map('map').setView([50.8466, 4.3528], 12); // Brussels coordinates
-        
-        // Add a tile layer to the map (OpenStreetMap)
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+// Initialize the map
+const map = L.map('map').setView([50.8466, 4.3528], 12); // Brussels coordinates
+
+// Add a tile layer to the map (OpenStreetMap)
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+// Setup filter event listeners
+setupFilterListeners();
+
+// Set up filter event listeners
+function setupFilterListeners() {
+  const priceFilter = document.getElementById('price-filter');
+  const hoursFilter = document.getElementById('hours-filter');
+  const wheelchairFilter = document.getElementById('wheelchair-filter');
+  const resetButton = document.getElementById('reset-filters');
+  
+  if (!priceFilter || !hoursFilter || !wheelchairFilter || !resetButton) return; // Safety check
+  
+// Function to apply filters
+function applyFilters() {
+  let filtered = [...allResults];
+  
+  // Apply price filter
+  if (priceFilter.value) {
+    filtered = filtered.filter(item => 
+      item.pricing_fr && item.pricing_fr.includes(priceFilter.value)
+    );
+  }
+  
+  // Apply hours filter
+  if (hoursFilter.value) {
+    if (hoursFilter.value === '24/24') {
+      filtered = filtered.filter(item => 
+        item.openinghours && item.openinghours.includes('24/24')
+      );
+    } else if (hoursFilter.value === 'limited') {
+      filtered = filtered.filter(item => 
+        item.openinghours && !item.openinghours.includes('24/24')
+      );
+    }
+  }
+  
+  // Apply wheelchair filter with the correct values
+  if (wheelchairFilter.value) {
+    filtered = filtered.filter(item => 
+      item.pmr_nl === wheelchairFilter.value
+    );
+  }
+  
+  // Update the display with filtered results
+  renderData(filtered);
+}
+  
+  // Add event listeners to all filter controls
+  priceFilter.addEventListener('change', applyFilters);
+  hoursFilter.addEventListener('change', applyFilters);
+  wheelchairFilter.addEventListener('change', applyFilters);
+  
+  // Reset filters button
+  resetButton.addEventListener('click', () => {
+    priceFilter.value = '';
+    hoursFilter.value = '';
+    wheelchairFilter.value = '';
+    
+    // Reset to show all results
+    renderData(allResults);
+  });
+}
         
         // Define columns for the table display
         const displayColumns = [
           { key: 'objectid', label: 'ID' },
           { key: 'address_fr', label: 'Location' },
           { key: 'pricing_fr', label: 'Pricing' },
-          { key: 'pmr_fr', label: 'Wheelchair Accessible' },
+          { key: 'pmr_nl', label: 'Wheelchair Accessible' },
           { key: 'openinghours', label: 'Opening Hours' },
           { key: 'municipality_fr', label: 'City/District' },
           { key: 'favorite', label: 'Favorite', isAction: true }
@@ -207,7 +303,7 @@ function loadUrinalsData() {
                 <strong>ID: ${result.objectid || 'Unnamed'}</strong><br>
                 ${result.address_fr || 'No address'}<br>
                 Type: ${result.type_fr || 'Unknown'}<br>
-                Wheelchair Accessible: ${result.pmr_fr || 'N/A'}<br>
+                Wheelchair Accessible: ${result.pmr_nl || 'N/A'}<br>
                 ${favorites.includes(result.objectid) ? '<span style="color: #ff4d4d;">❤ Favorite</span>' : ''}
               `;
               
