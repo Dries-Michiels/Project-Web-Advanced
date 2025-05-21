@@ -1,3 +1,4 @@
+/* General responsive fixes */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -24,53 +25,35 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  padding: 0;
+  /* Remove flex and place-items which can cause issues with responsiveness */
+  min-width: 100%;
   min-height: 100vh;
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 2.5em;
   line-height: 1.1;
 }
 
-h3{
+h3 {
   color: black;
 }
 
-label{
+label {
   color: black;
 }
 
 #app {
+  width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   text-align: center;
+  box-sizing: border-box;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #f7df1eaa);
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
+/* Button styles */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -90,15 +73,14 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-
+/* Map styles */
 #map {
   height: 400px;
   width: 100%;
   margin-bottom: 20px;
 }
 
-
-
+/* Responsive table styles */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -116,9 +98,11 @@ table th {
   color: black;
 }
 
-
-
-/* Existing styles... */
+/* Responsive table container */
+#records {
+  width: 100%;
+  overflow-x: auto;
+}
 
 /* Filter styles */
 #filters-container {
@@ -126,6 +110,8 @@ table th {
   padding: 15px;
   background-color: #f4f4f4;
   border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .filter-controls {
@@ -139,6 +125,7 @@ table th {
   display: flex;
   flex-direction: column;
   min-width: 150px;
+  flex-grow: 1;
 }
 
 .filter-group label {
@@ -150,6 +137,7 @@ table th {
   padding: 8px;
   border-radius: 4px;
   border: 1px solid #ddd;
+  width: 100%;
 }
 
 #reset-filters {
@@ -157,21 +145,6 @@ table th {
   align-self: flex-end;
   margin-top: 20px;
 }
-
-@media (max-width: 768px) {
-  .filter-controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .filter-group {
-    width: 100%;
-  }
-}
-
-
-
-/* ...existing code... */
 
 /* Favorites styles */
 .favorite-icon {
@@ -191,6 +164,8 @@ table th {
   background-color: #f9f9f9;
   border-radius: 5px;
   border-left: 4px solid #ff4d4d;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .favorites-section h2 {
@@ -207,10 +182,81 @@ table th {
   color: black;
 }
 
-/* ...existing code... */
+/* Layout for urinals page */
+#urinals-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
+/* Media Queries */
+@media (max-width: 768px) {
+  /* Typography adjustments */
+  h1 {
+    font-size: 2em;
+  }
+  
+  /* Filter controls in mobile view */
+  .filter-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-group {
+    width: 100%;
+  }
+  
+  #reset-filters {
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  /* Table adjustments for mobile */
+  table {
+    font-size: 0.9em;
+  }
+  
+  table th, table td {
+    padding: 6px 4px;
+  }
+  
+  /* Favorites section adjustments */
+  .favorites-section {
+    padding: 10px;
+  }
+}
 
-
+@media (max-width: 480px) {
+  /* Even smaller screens */
+  h1 {
+    font-size: 1.8em;
+  }
+  
+  #app {
+    padding: 0.5rem;
+  }
+  
+  /* Adjust map height */
+  #map {
+    height: 300px;
+  }
+  
+  /* Compact table for very small screens */
+  table {
+    font-size: 0.8em;
+  }
+  
+  table th, table td {
+    padding: 4px 2px;
+  }
+  
+  /* Hide less important columns on mobile */
+  table th:nth-child(6), 
+  table td:nth-child(6) {
+    display: none;
+  }
+}
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -224,7 +270,3 @@ table th {
     background-color: #f9f9f9;
   }
 }
-
-
-
-
