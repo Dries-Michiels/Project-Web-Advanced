@@ -19,37 +19,36 @@ const routes = {
     rootElement.innerHTML = '<h1>404 Not Found</h1>';
   },
 '/urinals': (rootElement) => {
-  // Create the basic structure for the urinals page with filter options
   rootElement.innerHTML = `
-    <h1>Public Urinals in Brussels</h1>
+    <h1>Openbare urinoirs in Brussel</h1>
     
     <div id="filters-container">
-      <h3>Filter Options</h3>
+      <h3>Filter Opties</h3>
       <div class="filter-controls">
         <div class="filter-group">
-          <label for="price-filter">Price:</label>
+          <label for="price-filter">Prijs:</label>
           <select id="price-filter">
-            <option value="">All</option>
-            <option value="Gratuit">Free</option>
-            <option value="Payant">Paid</option>
+            <option value="">Alle</option>
+            <option value="Gratis">Gratis</option>
+            <option value="Betalend">Betaald</option>
           </select>
         </div>
         
         <div class="filter-group">
-          <label for="hours-filter">Opening Hours:</label>
+          <label for="hours-filter">Openingstijden:</label>
           <select id="hours-filter">
-            <option value="">All</option>
+            <option value="">Alle</option>
             <option value="24/24">24/7 Open</option>
-            <option value="limited">Limited Hours</option>
+            <option value="limited">Beperkte uren</option>
           </select>
         </div>
         
         <div class="filter-group">
-          <label for="wheelchair-filter">Wheelchair Access:</label>
+          <label for="wheelchair-filter">Rolstoeltoegankelijk:</label>
           <select id="wheelchair-filter">
-            <option value="">All</option>
-            <option value="PBM">Accessible</option>
-            <option value="Niet PBM">Not Accessible</option>
+            <option value="">Alle</option>
+            <option value="PBM">Toegankelijk</option>
+            <option value="Niet PBM">Niet Toegankelijk</option>
           </select>
         </div>
         
@@ -63,16 +62,16 @@ const routes = {
     </div>
   `;
   
-  // Load and display the urinals data
-  loadUrinalsData();
+  
+  loadUrinalsData(); //Laat de functie in de urinals pagina
 },
 };
 
-function loadUrinalsData() {
+function loadUrinalsData() { 
   fetch('https://opendata.brussels.be/api/explore/v2.1/catalog/datasets/toilettes_publiques_vbx/records?limit=20')
-    .then(response => {
+    .then(response => { //Api ophalen
       if (!response.ok) {
-        throw new Error('Network response was not ok ' + response.statusText);
+        throw new Error('Er is een fout ' + response.statusText);
       }
       return response.json();
     })
@@ -80,47 +79,47 @@ function loadUrinalsData() {
       const results = data.results;
       
       if (results && results.length > 0) {
-        // Store all results
+        //Alle resultaten opslaan voor later gebruik
         const allResults = [...results];
         
-        // Store current results
+        //Huidige gefilterde resultaten opslaan
         let currentFilteredResults = [...allResults];
         
-        // Load favorites from localStorage
+        //Favorieten laden uit localStorage
         const favorites = loadFavorites();
         
-// Initialize the map
-const map = L.map('map').setView([50.8466, 4.3528], 12); // Brussels coordinates
+//Kaart instellen met Leaflet (met behulp van AI en Leaflet website)
+const map = L.map('map').setView([50.8466, 4.3528], 12); //Coördinaten van Brussel
 
-// Add a tile layer to the map (OpenStreetMap)
+//Kaartlaag toevoegen (OpenStreetMap)
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-// Setup filter event listeners
+//Event listeners instellen voor de filters
 setupFilterListeners();
 
-// Set up filter event listeners
+// Functie om alle filter event listeners in te stellen
 function setupFilterListeners() {
   const priceFilter = document.getElementById('price-filter');
   const hoursFilter = document.getElementById('hours-filter');
   const wheelchairFilter = document.getElementById('wheelchair-filter');
   const resetButton = document.getElementById('reset-filters');
   
-  if (!priceFilter || !hoursFilter || !wheelchairFilter || !resetButton) return; // Safety check
+  if (!priceFilter || !hoursFilter || !wheelchairFilter || !resetButton) return; //Veiligheidscontrole om te zorgen dat alle elementen bestaan. Niet persee nodig maar wel handig
   
-// Function to apply filters
+//Functie om filters toe te passen op de data
 function applyFilters() {
   let filtered = [...allResults];
   
-  // Apply price filter
+  //Prijsfilter
   if (priceFilter.value) {
     filtered = filtered.filter(item => 
-      item.pricing_fr && item.pricing_fr.includes(priceFilter.value)
+      item.pricing_nl && item.pricing_nl.includes(priceFilter.value)
     );
   }
   
-  // Apply hours filter
+  //Openingstijdenfilter
   if (hoursFilter.value) {
     if (hoursFilter.value === '24/24') {
       filtered = filtered.filter(item => 
@@ -133,71 +132,72 @@ function applyFilters() {
     }
   }
   
-  // Apply wheelchair filter with the correct values
+  //Rolstoeltoegankelijkheidsfilter
   if (wheelchairFilter.value) {
     filtered = filtered.filter(item => 
       item.pmr_nl === wheelchairFilter.value
     );
   }
   
-  // Update the display with filtered results
+  //Gefilterde resultaten weergeven
   renderData(filtered);
 }
   
-  // Add event listeners to all filter controls
+  //Event listeners toevoegen aan alle filterbesturingselementen
   priceFilter.addEventListener('change', applyFilters);
   hoursFilter.addEventListener('change', applyFilters);
   wheelchairFilter.addEventListener('change', applyFilters);
   
-  // Reset filters button
+  //Resetknop instellen om alle filters te wissen
   resetButton.addEventListener('click', () => {
     priceFilter.value = '';
     hoursFilter.value = '';
     wheelchairFilter.value = '';
     
-    // Reset to show all results
+    //Toon alle resultaten opnieuw
     renderData(allResults);
   });
 }
         
-        // Define columns for the table display
+        //Kolom voor de tabelweergave
         const displayColumns = [
           { key: 'objectid', label: 'ID' },
-          { key: 'address_fr', label: 'Location' },
-          { key: 'pricing_fr', label: 'Pricing' },
-          { key: 'pmr_nl', label: 'Wheelchair Accessible' },
-          { key: 'openinghours', label: 'Opening Hours' },
-          { key: 'municipality_fr', label: 'City/District' },
-          { key: 'favorite', label: 'Favorite', isAction: true }
+          { key: 'address_nl', label: 'Locatie' },
+          { key: 'pricing_nl', label: 'Prijs' },
+          { key: 'pmr_nl', label: 'Rolstoeltoegankelijk' },
+          { key: 'openinghours', label: 'Openingstijden' },
+          { key: 'municipality_nl', label: 'Stad' },
+          { key: 'favorite', label: 'Favoriet', isAction: true }
         ];
         
-        // Create function to render the data
+        //Functie om de data weer te geven in tabellen en op de kaart
         const renderData = (items) => {
-          // Store the current filtered results for later use
+          //Huidige gefilterde resultaten opslaan voor later gebruik
           currentFilteredResults = items;
           
-          // Clear existing markers
+          //Bestaande markers van de kaart verwijderen
           map.eachLayer(layer => {
             if (layer instanceof L.Marker) {
               map.removeLayer(layer);
             }
           });
           
+          //DOM-element voor de records vinden en leegmaken
           const recordsDiv = document.getElementById('records');
           recordsDiv.innerHTML = '';
           
-          // Create favorites section first
+          //Sectie voor favorieten aanmaken
           const favoritesSection = document.createElement('div');
           favoritesSection.className = 'favorites-section';
           favoritesSection.innerHTML = '<h2>Favorieten</h2>';
           
-          // Get current favorites
+          //Huidige favorieten ophalen
           const currentFavorites = loadFavorites();
           const favoriteItems = items.filter(item => 
             currentFavorites.includes(item.objectid)
           );
           
-          // Add favorites table if there are any
+          //Favorieten toevoegen als er favorieten zijn
           if (favoriteItems.length > 0) {
             const favTable = createTable(favoriteItems, displayColumns, currentFavorites);
             favoritesSection.appendChild(favTable);
@@ -205,28 +205,29 @@ function applyFilters() {
             favoritesSection.innerHTML += '<p class="no-favorites">Nog geen favorieten. Klik op het hartje om favorieten toe te voegen.</p>';
           }
           
+          //Favorietensectie toevoegen aan de DOM
           recordsDiv.appendChild(favoritesSection);
           
-          // Create a table for all results
+          //Titel voor alle resultaten aanmaken
           const allResultsHeading = document.createElement('h2');
           allResultsHeading.textContent = 'All Urinals';
           recordsDiv.appendChild(allResultsHeading);
           
-          // Create the table for all results
+          //Tabel voor alle resultaten aanmaken en toevoegen
           const allResultsTable = createTable(items, displayColumns, currentFavorites);
           recordsDiv.appendChild(allResultsTable);
           
-          // Add markers to the map
+          //Markers toevoegen aan de kaart
           addMarkersToMap(items, map, currentFavorites);
         };
         
-        // Create reusable function to build tables
+        //Herbruikbare functies om tabellen mee te maken
         function createTable(items, columns, favorites) {
           const table = document.createElement('table');
           const thead = document.createElement('thead');
           const tbody = document.createElement('tbody');
           
-          // Create table header
+          //Tabelkop aanmaken
           const headerRow = document.createElement('tr');
           columns.forEach(column => {
             const th = document.createElement('th');
@@ -235,15 +236,15 @@ function applyFilters() {
           });
           thead.appendChild(headerRow);
           
-          // Populate table rows
+          //Tabelrijen vullen met data
           items.forEach(result => {
             const row = document.createElement('tr');
             
             columns.forEach(column => {
               const td = document.createElement('td');
               
-              if (column.isAction && column.key === 'favorite') {
-                // Add heart icon for favorites
+              if (column.isAction && column.key === 'favorite') { //Hart toevoegen aan favorieten
+                
                 const isFavorite = favorites.includes(result.objectid);
                 
                 const heartIcon = document.createElement('span');
@@ -251,12 +252,12 @@ function applyFilters() {
                 heartIcon.innerHTML = isFavorite ? '❤' : '♡';
                 heartIcon.setAttribute('data-id', result.objectid);
                 
-                // Add click event to toggle favorite
+                //Klikevent voor favorieten
                 heartIcon.addEventListener('click', () => {
                   const id = result.objectid;
                   toggleFavorite(id);
                   
-                  // Refresh the display using the current results
+                  //Herladen om de nieuwe favorieten te zien
                   renderData(currentFilteredResults);
                 });
                 
@@ -270,26 +271,27 @@ function applyFilters() {
             
             tbody.appendChild(row);
           });
-          
+
+          //Tabel samenstellen en teruggeven
           table.appendChild(thead);
           table.appendChild(tbody);
           return table;
         }
         
-        // Function to add markers to map
+        //Functie om markers (punten) aan de kaart toe te voegen (met behulp van AI en Leaflet website)
         function addMarkersToMap(items, map, favorites) {
           items.forEach(result => {
-            // Add marker to the map if geo_point_2d exists
+            //Alleen marker toevoegen als geo_point_2d bestaat
             if (result.geo_point_2d) {
               const lat = result.geo_point_2d.lat;
               const lon = result.geo_point_2d.lon;
               
-              // Create marker
+              //Marker aanmaken en toevoegen aan de kaart
               const marker = L.marker([lat, lon]).addTo(map);
               
-              // Change marker icon if it's a favorite
+              //Markericoon aanpassen als het een favoriet is
               if (favorites.includes(result.objectid)) {
-                // Use leaflet's divIcon to create a custom marker
+                //Leaflet's divIcon gebruiken om een aangepaste marker te maken
                 const favoriteIcon = L.divIcon({
                   html: '<div style="background-color: #ff4d4d; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;"></div>',
                   className: 'favorite-marker',
@@ -298,45 +300,45 @@ function applyFilters() {
                 marker.setIcon(favoriteIcon);
               }
               
-              // Create popup content
+              //Popup maken met de informatie over het urinoir op basis van de gegevens en locatie
               const popupContent = `
                 <strong>ID: ${result.objectid || 'Unnamed'}</strong><br>
-                ${result.address_fr || 'No address'}<br>
-                Type: ${result.type_fr || 'Unknown'}<br>
-                Wheelchair Accessible: ${result.pmr_nl || 'N/A'}<br>
-                ${favorites.includes(result.objectid) ? '<span style="color: #ff4d4d;">❤ Favorite</span>' : ''}
+                ${result.address_nl || 'Geen adres'}<br>
+                Type: ${result.type_nl || 'Onbekend'}<br>
+                Rolstoeltoegankelijk: ${result.pmr_nl || 'N/A'}<br>
+                ${favorites.includes(result.objectid) ? '<span style="color: #ff4d4d;">❤ Favoriet</span>' : ''}
               `;
               
-              // Add popup to marker
+              //Popup toevoegen aan de marker
               marker.bindPopup(popupContent);
             }
           });
         }
         
-        // Function to toggle favorite status
+        //Functie om favorieten-status te wisselen
         function toggleFavorite(id) {
           const favorites = loadFavorites();
           const index = favorites.indexOf(id);
           
           if (index === -1) {
-            // Add to favorites
+            //Toevoegen aan favorieten
             favorites.push(id);
           } else {
-            // Remove from favorites
+            //Verwijderen uit favorieten
             favorites.splice(index, 1);
           }
           
-          // Save updated favorites
+          //Bijgewerkte favorieten opslaan
           saveFavorites(favorites);
         }
         
-        // Function to load favorites from localStorage
+        //Functie om favorieten te laden uit localStorage
         function loadFavorites() {
           const favoritesJson = localStorage.getItem('urinal-favorites');
           return favoritesJson ? JSON.parse(favoritesJson) : [];
         }
         
-        // Function to save favorites to localStorage
+        //Functie om favorieten op te slaan in localStorage
         function saveFavorites(favorites) {
           localStorage.setItem('urinal-favorites', JSON.stringify(favorites));
         }
@@ -344,18 +346,18 @@ function applyFilters() {
         
         
         
-        // Initial render with all data
+        //Initiële weergave met alle data
         renderData(allResults);
         
-      } else {
-        document.getElementById('records').textContent = 'No records found.';
+      } else { //Bericht tonen als er geen resultaten zijn
+        document.getElementById('records').textContent = 'Geen records gevonden';
       }
     })
-    .catch(error => {
-      console.error('Error fetching data:', error);
-      document.getElementById('records').textContent = 'Error fetching data.';
+    .catch(error => { //Foutafhandeling bij het ophalen van de data
+      console.error('Fout bij het ophalen van gegevens:', error);
+      document.getElementById('records').textContent = 'Fout bij het ophalen van gegevens';
     });
 }
 
-// Router initialiseren
+//Router initialiseren
 new Router(routes);

@@ -26,9 +26,6 @@ a:hover {
 body {
   margin: 0;
   padding: 0;
-  /* Remove flex and place-items which can cause issues with responsiveness */
-  min-width: 100%;
-  min-height: 100vh;
 }
 
 h1 {
