@@ -1,7 +1,4 @@
 import './style.css';
-import javascriptLogo from './javascript.svg';
-import viteLogo from '/vite.svg';
-import { setupCounter } from './counter.js';
 import Router from './router.js';
 
 // Routes definiëren
@@ -210,7 +207,7 @@ function applyFilters() {
           
           //Titel voor alle resultaten aanmaken
           const allResultsHeading = document.createElement('h2');
-          allResultsHeading.textContent = 'All Urinals';
+          allResultsHeading.textContent = 'Alle urinoirs';
           recordsDiv.appendChild(allResultsHeading);
           
           //Tabel voor alle resultaten aanmaken en toevoegen
