@@ -1,4 +1,4 @@
-/* General responsive fixes */
+/* Algemene responsieve aanpassingen */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -14,6 +14,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Link stijlen */
 a {
   font-weight: 500;
   color: #646cff;
@@ -23,11 +24,13 @@ a:hover {
   color: #535bf2;
 }
 
+/* Basis body stijlen */
 body {
   margin: 0;
   padding: 0;
 }
 
+/* Typografie instellingen */
 h1 {
   font-size: 2.5em;
   line-height: 1.1;
@@ -41,6 +44,7 @@ label {
   color: black;
 }
 
+/* Hoofdcontainer stijlen */
 #app {
   width: 100%;
   max-width: 1280px;
@@ -50,7 +54,7 @@ label {
   box-sizing: border-box;
 }
 
-/* Button styles */
+/* Knop stijlen */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -70,14 +74,14 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-/* Map styles */
+/* Kaart stijlen */
 #map {
   height: 400px;
   width: 100%;
   margin-bottom: 20px;
 }
 
-/* Responsive table styles */
+/* Responsieve tabel stijlen */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -95,13 +99,13 @@ table th {
   color: black;
 }
 
-/* Responsive table container */
+/* Responsieve tabel container */
 #records {
   width: 100%;
   overflow-x: auto;
 }
 
-/* Filter styles */
+/* Filter stijlen */
 #filters-container {
   margin-bottom: 20px;
   padding: 15px;
@@ -111,6 +115,7 @@ table th {
   box-sizing: border-box;
 }
 
+/* Flexibele indeling voor filterelementen */
 .filter-controls {
   display: flex;
   flex-wrap: wrap;
@@ -118,6 +123,7 @@ table th {
   align-items: center;
 }
 
+/* Individuele filtergroep stijlen */
 .filter-group {
   display: flex;
   flex-direction: column;
@@ -137,13 +143,14 @@ table th {
   width: 100%;
 }
 
+/* Reset filters knop */
 #reset-filters {
   height: 36px;
   align-self: flex-end;
   margin-top: 20px;
 }
 
-/* Favorites styles */
+/* Favorieten stijlen */
 .favorite-icon {
   cursor: pointer;
   font-size: 1.2rem;
@@ -151,10 +158,12 @@ table th {
   transition: color 0.2s ease;
 }
 
+/* Actieve favoriet icoon (aangevinkt) */
 .favorite-icon.active {
   color: #ff4d4d;
 }
 
+/* Sectie voor het tonen van favorieten */
 .favorites-section {
   margin-top: 30px;
   padding: 15px;
@@ -170,6 +179,7 @@ table th {
   margin-top: 0;
 }
 
+/* Bericht wanneer er geen favorieten zijn */
 .no-favorites {
   font-style: italic;
   color: #666;
@@ -179,7 +189,7 @@ table th {
   color: black;
 }
 
-/* Layout for urinals page */
+/* Layout voor urinoirs pagina */
 #urinals-container {
   width: 100%;
   display: flex;
@@ -187,14 +197,14 @@ table th {
   gap: 20px;
 }
 
-/* Media Queries */
+/* Media Queries voor responsiviteit */
 @media (max-width: 768px) {
-  /* Typography adjustments */
+  /* Typografie aanpassingen voor tablets */
   h1 {
     font-size: 2em;
   }
   
-  /* Filter controls in mobile view */
+  /* Filter controls in mobiele weergave */
   .filter-controls {
     flex-direction: column;
     align-items: stretch;
@@ -209,7 +219,7 @@ table th {
     margin-top: 10px;
   }
   
-  /* Table adjustments for mobile */
+  /* Tabel aanpassingen voor tablets */
   table {
     font-size: 0.9em;
   }
@@ -218,14 +228,15 @@ table th {
     padding: 6px 4px;
   }
   
-  /* Favorites section adjustments */
+  /* Favorieten sectie aanpassingen */
   .favorites-section {
     padding: 10px;
   }
 }
 
+/* Voor nog kleinere schermen zoals smartphones */
 @media (max-width: 480px) {
-  /* Even smaller screens */
+  /* Extra kleine schermen */
   h1 {
     font-size: 1.8em;
   }
@@ -234,12 +245,12 @@ table th {
     padding: 0.5rem;
   }
   
-  /* Adjust map height */
+  /* Kaarthoogte aanpassen */
   #map {
     height: 300px;
   }
   
-  /* Compact table for very small screens */
+  /* Compacte tabel voor zeer kleine schermen */
   table {
     font-size: 0.8em;
   }
@@ -248,13 +259,14 @@ table th {
     padding: 4px 2px;
   }
   
-  /* Hide less important columns on mobile */
+  /* Verberg minder belangrijke kolommen op mobiel */
   table th:nth-child(6), 
   table td:nth-child(6) {
     display: none;
   }
 }
 
+/* Aanpassingen voor licht kleurenschema */
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
