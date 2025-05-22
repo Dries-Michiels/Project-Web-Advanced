@@ -188,13 +188,13 @@ npm run preview
 
 ## 📱 Screenshots
 
-![Filter opties](./screenshots/filter.png)
+![Filter opties](./my-project/screenshots/filter.png)
 
-![Kaart](./screenshots/kaart.png)
+![Kaart](./my-project/screenshots/kaart.png)
 
-![Favorieten](./screenshots/favorieten.png)
+![Favorieten](./my-project/screenshots/favorieten.png)
 
-![Alle Urinoirs](./screenshots/alleurinoirs.png)
+![Alle Urinoirs](./my-project/screenshots/alleurinoirs.png)
 
 
 ## 🔧 Gebruikte Bronnen
